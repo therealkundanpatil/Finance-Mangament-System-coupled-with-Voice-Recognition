@@ -1,9 +1,22 @@
 import React from "react";
+import Details from "./components/Details/Details.jsx";
+import { Grid } from "@material-ui/core";
 
-function App(){
+
+function App() {
     return (
         <div>
-            App
+            <Grid container spacing={0} alignItems="center" justify="center" style={{ height: "100vh" }}>
+                <Grid item xs={12} sm={4}>
+                    <Details/>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    Main
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <Details/>
+                </Grid>
+            </Grid>
         </div>
     );
 }
