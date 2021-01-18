@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 import {
     TextField,
     Typography,
@@ -7,48 +7,79 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
 } from "@material-ui/core";
 
 import useStyles from "./styles.js";
 
-function Form() {
+import {ExpenseTrackerContext} from "../../../context/context";
+
+import {v4 as uuidv4} from "uuid";
+
+import { incomeCategories, expenseCategories } from "../../../constants/categories";
+
+const initialState = {
+    amount:"",
+    category:"",
+    type: "Income",
+    date: new Date(),
+}
+
+
+function Form(){
 
     const classes = useStyles();
+
+    const [ formData, setFormData ] = useState(initialState);
+
+    const { addTransaction } = useContext(ExpenseTrackerContext);
+
+    const createTransaction = () => {
+        const transaction = {...formData, amount: Number(formData.amount), id: uuidv4()}
+        addTransaction(transaction);
+        setFormData(initialState);
+    }
+
+    const selectedCateogries = formData.type === incomeCategories ? incomeCategories : expenseCategories;
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Typography align="center" varaint="subtitle2" gutterBottom>
-                    Something
+                <Typography align="center" variant="subtitle2" gutterBottom>
+                    ...
                 </Typography>
+            </Grid>
+            <Grid item xs = {6}>
+                <FormControl fullWidth>
+                    <InputLabel>Type</InputLabel>
+                    <Select value= {formData.type} onChange= {(e) => (setFormData({...formData, type: e.target.value}))}>
+                        <MenuItem value= "Income">Income</MenuItem>
+                        <MenuItem value= "Expense">Expense</MenuItem>
+                    </Select>
+                </FormControl>
             </Grid>
             <Grid item xs={6}>
                 <FormControl fullWidth>
-                    <InputLabel>Type</InputLabel>
-                    <Select>
-                        <MenuItem value="Income">Income</MenuItem>
-                        <MenuItem value="Expense">Expense</MenuItem>
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item xs={6}>
-                <FormControl fullwidth>
                     <InputLabel>Category</InputLabel>
-                    <Select>
-                        <MenuItem value="business">Business</MenuItem>
-                        <MenuItem value="Salary">Salary</MenuItem>
-                        <MenuItem value="Grocery">Grocery</MenuItem>
+                    <Select value= {formData.category} onChange= {(e) => (setFormData({...formData, category: e.target.value}))}>
+                        {selectedCateogries.map( (c) => (
+                            <MenuItem key={c.type} value={c.type}>
+                                {c.type}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </Grid>
             <Grid item xs={6}>
-                <TextField type="number" label="Amount" fullwidth></TextField>
+                <TextField type= "number" label= "Amount" fullWidth value= {formData.amount} onChange= {(e) => (setFormData({...formData, amount: e.target.value}))}/>
             </Grid>
             <Grid item xs={6}>
-                <TextField type="date" label="Date" fullwidth></TextField>
+                <TextField type= "date" label= "Date" fullWidth value= {formData.date} onChange= {(e) => (setFormData({...formData, date: e.target.value}))}/>
             </Grid>
-            <Button className={classes.button} variant="outlined" color="primary" fullwidth>Create</Button>
+
+            <Button className={classes.button} variant= "outlined" color= "primary" fullWidth onClick= {createTransaction} >
+                Generate
+            </Button>
         </Grid>
     );
 }
