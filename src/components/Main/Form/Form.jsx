@@ -40,8 +40,8 @@ function Form(){
         setFormData(initialState);
     }
 
-    const selectedCateogries = formData.type === incomeCategories ? incomeCategories : expenseCategories;
-
+    const selectedCateogries = formData.type === "Income" ? incomeCategories : expenseCategories;
+    
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
